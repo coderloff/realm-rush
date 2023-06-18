@@ -2,23 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Enemy))]
 public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] int maxHitPoints = 5;
+    [Tooltip("Adds amount to maxHitPoints when enemy dies")]
+    [SerializeField] int difficultyRamp = 1;
+
     int currentHitPoints = 0;
 
-    // Start is called before the first frame update
-    void Start()
+    Enemy enemy;
+
+    void OnEnable()
     {
         currentHitPoints = maxHitPoints;
     }
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-
+        enemy = GetComponent<Enemy>();
     }
-
 
     void OnParticleCollision(GameObject other)
     {
@@ -31,7 +34,9 @@ public class EnemyHealth : MonoBehaviour
 
         if(currentHitPoints <= 0)
         {
-            Destroy(gameObject);
+            enemy.RewardGold();
+            maxHitPoints += difficultyRamp;
+            gameObject.SetActive(false);
         }
     }
 }
